@@ -1,0 +1,71 @@
+body {
+  font-family: 'Roboto', sans-serif;
+}
+
+.page.show-modal .backdrop {
+  display: flex;
+}
+
+.button {
+  margin: 0 4px;
+  padding: 8px 32px;
+  font-family: inherit;
+  cursor: pointer;
+  font-size: 14px;
+  border-radius: 2px;
+  font-weight: 500;
+  text-transform: uppercase;
+}
+
+.backdrop {
+  display: none;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 999;
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
+.modal {
+  width: 500px;
+  min-height: 200px;
+  padding: 16px;
+  background-color: #fff;
+  border-radius: 2px;
+}
+
+.modal .actions {
+  display: flex;
+  justify-content: center;
+}
+
+.note-editor {
+  width: 400px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 32px;
+}
+
+.note-list {
+  width: 600px;
+  list-style: none;
+  padding: 0;
+  margin: 0 auto;
+}
+
+.note {
+  display: flex;
+  border: 1px solid #212121;
+  margin-bottom: 8px;
+  padding: 8px;
+}
+
+.note p {
+  margin: 0;
+  margin-right: 16px;
+}
