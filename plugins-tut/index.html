@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Webinar 21-08</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body class="page">
+  <!-- LOADER -->
+  <div class="page-load-status">
+    <p class="infinite-scroll-request">
+      <div class="loader-overlay">
+        <div class="loader">
+          <svg class="circular" viewBox="25 25 50 50">
+            <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"
+            />
+          </svg>
+        </div>
+      </div>
+    </p>
+  </div>
+
+
+  <!-- SEARCH FORM -->
+  <header class="header">
+    <form class="form">
+      <input type="text" class="input">
+      <button type=" submit " class="button">Submit</button>
+    </form>
+  </header>
+
+  <!-- IMAGE GRID -->
+  <main class="main">
+    <div class="grid">
+      <div class="grid__col-sizer"></div>
+      <div class="grid__gutter-sizer"></div>
+    </div>
+  </main>
+
+  <script src="https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js"></script>
+  <script src="https://unpkg.com/infinite-scroll@3/dist/infinite-scroll.pkgd.min.js"></script>
+  <script src="app.js"></script>
+</body>
+
+</html>
