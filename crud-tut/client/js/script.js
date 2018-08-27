@@ -1,32 +1,69 @@
 'use strict';
-const API_URL = 'http://localhost:3000/notes';
-const refs = {
-  noteEditor: document.querySelector('.note-editor'),
-  noteEditorInput: document.querySelector('.note-editor textarea'),
-  noteList: document.querySelector('.note-list'),
-  modal: document.querySelector('.modal'),
-  modalInput: document.querySelector('.modal textarea'),
-  modalBackdrop: document.querySelector('.backdrop'),
+
+const api = {
+  baseUrl: 'http://localhost:3000/notes',
+  getAllNotes() {
+    return fetch(this.baseUrl)
+      .then(response => {
+        if (response.ok) return response.json();
+
+        throw new Error('Error while fetching ' + response.statusText);
+      })
+      .catch(error => console.log(error));
+  },
+  addNote(note) {
+    return fetch(this.baseUrl, {
+      method: 'POST',
+      body: JSON.stringify(note),
+      headers: { 'Content-type': 'application/json; charset=UTF-8' },
+    })
+      .then(response => {
+        if (response.ok) return response.json();
+
+        throw new Error('Error while fetching ' + response.statusText);
+      })
+      .catch(error => console.log(error));
+  },
+  deleteNote(id) {
+    return fetch(`${this.baseUrl}/${id}`, { method: 'DELETE' })
+      .then(response => {
+        if (!response.ok) throw new Error('Неполучилось удалить!!!');
+      })
+      .catch(error => console.log(error));
+  },
+  updateNote(note) {
+    return fetch(`${this.baseUrl}/${note.id}`, {
+      method: 'PATCH',
+      body: JSON.stringify(note),
+      headers: {
+        'Content-type': 'application/json',
+      },
+    })
+      .then(response => {
+        if (response.ok) return response.json();
+
+        throw new Error('Error while fetching ' + response.statusText);
+      })
+      .catch(error => console.log(error));
+  },
 };
 
-const state = {
-  selectedId: null,
-};
+document.addEventListener('DOMContentLoaded', () => {
+  const refs = selectRefs();
+  const state = { selectedId: null };
 
-init();
+  refs.noteEditor.addEventListener('submit', handleNoteEditorSubmit);
+  refs.noteList.addEventListener('click', handleNoteListClick);
+  refs.modal.addEventListener('click', handleModalClick);
 
-refs.noteEditor.addEventListener('submit', handleNoteEditorSubmit);
-refs.noteList.addEventListener('click', handleNoteListClick);
-refs.modal.addEventListener('click', handleModalClick);
+  init();
 
-/**
- * ================================================================
- */
+  /**
+   * Helper functions
+   */
 
-function init() {
-  fetch(API_URL)
-    .then(response => response.json())
-    .then(notes => {
+  function init() {
+    api.getAllNotes().then(notes => {
       const markup = notes.reduce(
         (acc, note) => acc + createNoteMarkup(note),
         '',
@@ -34,114 +71,95 @@ function init() {
 
       refs.noteList.insertAdjacentHTML('afterbegin', markup);
     });
-}
+  }
 
-function handleNoteEditorSubmit(e) {
-  e.preventDefault();
+  function handleNoteEditorSubmit(e) {
+    e.preventDefault();
 
-  const text = refs.noteEditorInput.value.trim();
+    const text = refs.noteEditorInput.value.trim();
 
-  if (text === '') return alert('Нельзя добавить пустую заметку!!!');
+    if (text === '') return alert('Нельзя добавить пустую заметку!!!');
 
-  const noteToAdd = { text };
-
-  refs.noteEditor.reset();
-
-  fetch(API_URL, {
-    method: 'POST',
-    body: JSON.stringify(noteToAdd),
-    headers: {
-      'Content-type': 'application/json; charset=UTF-8',
-    },
-  })
-    .then(response => response.json())
-    .then(note => {
+    api.addNote({ text }).then(note => {
       const markup = createNoteMarkup(note);
       refs.noteList.insertAdjacentHTML('beforeend', markup);
-    })
-    .catch(error => console.log(error));
-}
+    });
 
-function handleNoteListClick({ target }) {
-  if (target.nodeName !== 'BUTTON') return;
-
-  const action = target.dataset.action;
-
-  switch (action) {
-    case 'delete':
-      deleteNote(target);
-      break;
-
-    case 'edit':
-      updateNote(target);
-      break;
-
-    default:
-      throw new Error('Unrecognized action type ' + action);
+    refs.noteEditor.reset();
   }
-}
 
-function handleModalClick({ target }) {
-  if (target.nodeName !== 'BUTTON') return;
+  function handleNoteListClick({ target }) {
+    if (target.nodeName !== 'BUTTON') return;
 
-  const action = target.dataset.action;
+    const action = target.dataset.action;
 
-  switch (action) {
-    case 'close':
-      toggleModal();
-      break;
+    switch (action) {
+      case 'delete':
+        deleteNote(target);
+        break;
 
-    case 'save':
-      saveNote();
-      break;
+      case 'edit':
+        editNoteStart(target);
+        break;
 
-    default:
-      throw new Error('Unrecognized action type ' + action);
+      default:
+        throw new Error('Unrecognized action type ' + action);
+    }
   }
-}
 
-function deleteNote(target) {
-  const note = target.closest('.note');
-  const noteIdToDelete = Number(note.dataset.id);
+  function handleModalClick({ target }) {
+    if (target.nodeName !== 'BUTTON') return;
 
-  fetch(`${API_URL}/${noteIdToDelete}`, { method: 'DELETE' })
-    .then(response => {
-      if (!response.ok) throw new Error('Неполучилось удалить!!!');
+    const action = target.dataset.action;
 
+    switch (action) {
+      case 'close':
+        editNoteCancel();
+        break;
+
+      case 'save':
+        editNoteSuccess();
+        break;
+
+      default:
+        throw new Error('Unrecognized action type ' + action);
+    }
+  }
+
+  function deleteNote(target) {
+    const note = target.closest('.note');
+    const noteIdToDelete = Number(note.dataset.id);
+
+    api.deleteNote(noteIdToDelete).then(() => {
       note.remove();
-    })
-    .catch(error => console.log(error));
-}
+    });
+  }
 
-function updateNote(target) {
-  const note = target.closest('.note');
-  const noteIdToUpdate = Number(note.dataset.id);
-  state.selectedId = noteIdToUpdate;
+  function editNoteStart(target) {
+    const note = target.closest('.note');
+    const noteIdToEdit = Number(note.dataset.id);
+    state.selectedId = noteIdToEdit;
 
-  const noteContent = note.querySelector('.text').textContent;
+    const noteText = note.querySelector('.text').textContent;
 
-  refs.modalInput.value = noteContent;
+    refs.modalInput.value = noteText;
 
-  toggleModal();
-}
+    toggleModal();
+  }
 
-function saveNote() {
-  const updatedNoteContent = refs.modalInput.value;
-  const noteIdToUpdate = state.selectedId;
+  function editNoteCancel() {
+    state.selectedId = null;
+    refs.modalInput.value = '';
+    toggleModal();
+  }
 
-  const noteToUpdate = {
-    text: updatedNoteContent,
-  };
+  function editNoteSuccess() {
+    const noteToUpdate = {
+      id: state.selectedId,
+      text: refs.modalInput.value,
+    };
 
-  fetch(`${API_URL}/${noteIdToUpdate}`, {
-    method: 'PATCH',
-    body: JSON.stringify(noteToUpdate),
-    headers: {
-      'Content-type': 'application/json',
-    },
-  })
-    .then(response => response.json())
-    .then(updatedNote => {
+    api.updateNote(noteToUpdate).then(updatedNote => {
       const noteTextEl = refs.noteList.querySelector(
         `.note[data-id="${updatedNote.id}"] .text`,
       );
@@ -149,12 +167,11 @@ function saveNote() {
       noteTextEl.textContent = updatedNote.text;
 
       toggleModal();
-    })
-    .catch(error => console.log(error));
-}
+    });
+  }
 
-function createNoteMarkup({ id, text }) {
-  return `
+  function createNoteMarkup({ id, text }) {
+    return `
     <li class="note" data-id="${id}">
       <div class="actions">
         <button class="button" data-action="edit">Редактировать</button>
@@ -163,29 +180,22 @@ function createNoteMarkup({ id, text }) {
       <p class="text">${text}</p>
     </li>
   `;
-}
+  }
 
-function toggleModal() {
-  refs.modalBackdrop.classList.toggle('is-visible');
-}
+  function toggleModal() {
+    refs.modalBackdrop.classList.toggle('is-visible');
+  }
 
-// function request({
-//   url = 'http://localhost:3000/notes',
-//   method = 'GET',
-//   body = {},
-//   headers = {
-//     'Content-type': 'application/json',
-//   },
-// }) {
-//   return fetch(url, {
-//     method,
-//     body: JSON.stringify(body),
-//     headers,
-//   })
-//     .then(response => {
-//       if(response.ok) return response.json();
+  function selectRefs() {
+    const refs = {};
 
-//       throw new Error(`Error while fetching ${response.statusText}`);
-//     })
-//     .catch(error => console.log(error));
-// }
+    refs.noteEditor = document.querySelector('.note-editor');
+    refs.noteEditorInput = refs.noteEditor.querySelector('textarea');
+    refs.noteList = document.querySelector('.note-list');
+    refs.modal = document.querySelector('.modal');
+    refs.modalInput = refs.modal.querySelector('textarea');
+    refs.modalBackdrop = document.querySelector('.backdrop');
+
+    return refs;
+  }
+});
