@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>CRUD</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body>
+
+  <div class="container">
+    <form class="note-editor">
+      <textarea class="textarea" rows="12"></textarea>
+      <button class="button">Добавить</button>
+    </form>
+
+    <ul class="note-list">
+    </ul>
+  </div>
+
+  <div class="backdrop">
+    <div class="modal">
+      <textarea class="textarea" rows="12"></textarea>
+
+      <div class="actions">
+        <button class="button" data-action="save">Сохранить</button>
+        <button class="button" data-action="close">Отмена</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/script.js"></script>
+</body>
+
+</html>
