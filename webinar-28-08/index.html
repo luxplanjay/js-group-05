@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Webinar 28-08</title>
+  <link href="https://fonts.googleapis.com/css?family=Roboto:400,500" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Merriweather:700i" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+  <div id="root"></div>
+
+  <ul class="cats-list"></ul>
+
+  <div class="grid"></div>
+
+  <template id="cat-template">
+    <div class="cat">
+      <img src="{{img}}" alt="cat">
+      <h2>Name: {{name}}</h2>
+      <p>Age: {{age}}</p>
+    </div>
+  </template>
+
+  <template id="cats-list-card">
+    <li>
+      <h2>Name: {{name}}</h2>
+      <p>Age: {{age}}</p>
+
+      {{#if joyful}}
+      <p>Mood: 😊</p>
+      {{else}}
+      <p>Mood: 🙁</p>
+      {{/if}}
+
+      <ul>
+        {{#each traits}}
+        <li>{{this}}</li>
+        {{/each}}
+      </ul>
+    </li>
+  </template>
+
+  <template id="dish-card">
+    <div class="card">
+      <img class="img" src="{{image}}" alt="{{name}}">
+      <div class="content">
+        <h2 class="name">{{name}}</h2>
+        <p class="descr">{{descr}}</p>
+        <footer class="footer">
+          <p class="price">Price: {{price}}$</p>
+          {{#if available}}
+          <button class="button">Add to order</button>
+          {{/if}}
+        </footer>
+
+        {{#unless available}}
+        <p class="sold-out">Sold Out!</p>
+        {{/unless}}
+      </div>
+    </div>
+  </template>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.11/handlebars.min.js"></script>
+  <script src="script.js"></script>
+</body>
+
+</html>
