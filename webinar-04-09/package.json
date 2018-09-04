@@ -1,0 +1,23 @@
+{
+  "name": "npm-tutorial",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "babel src -d build --watch",
+    "sass": "node-sass src/styles.scss build/styles.css",
+    "minify": "postcss build/styles.css > build/styles.min.css",
+    "styles": "npm run sass && npm run minify"
+  },
+  "keywords": [],
+  "author": "Alexander Repeta <alexander.repeta@gmail.com>",
+  "license": "ISC",
+  "dependencies": {},
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "^1.7.0",
+    "cssnano": "^4.1.0",
+    "node-sass": "^4.9.3",
+    "postcss-cli": "^6.0.0"
+  }
+}
