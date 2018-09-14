@@ -10,7 +10,7 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, 'build'),
     filename: 'bundle.js',
-    publicPath: 'js-group-05/webpack-tut/build/',
+    publicPath: '/',
   },
   module: {
     rules: [
