@@ -10,7 +10,7 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, 'build'),
     filename: 'bundle.js',
-    publicPath: 'axZerk/js-group-05/tree/master/webpack-tut/build',
+    publicPath: 'https://axzerk.github.io/js-group-05/webpack-tut/build',
   },
   module: {
     rules: [
