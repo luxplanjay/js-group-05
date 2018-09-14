@@ -1,0 +1,7 @@
+body {
+  background-color: palevioletred; }
+
+form {
+  display: flex;
+  flex-direction: column; }
+
