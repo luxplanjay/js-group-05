@@ -1,0 +1,12 @@
+{
+  "recipes": [
+    {
+      "text": "уауау",
+      "id": 1
+    },
+    {
+      "text": "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Curabitur suscipit suscipit tellus. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; In ac dui quis mi consectetuer lacinia. Donec id justo.\n\nEtiam vitae tortor. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Sed aliquam, nisi quis porttitor congue, elit erat euismod orci, ac placerat dolor lectus quis orci. Praesent turpis. Nunc egestas, augue at pellentesque laoreet, felis eros vehicula leo, at malesuada velit leo quis pede.",
+      "id": 2
+    }
+  ]
+}
